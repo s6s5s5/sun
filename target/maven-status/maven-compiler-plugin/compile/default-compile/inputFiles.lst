@@ -1,0 +1,17 @@
+E:\ai-wechat\wechat-ltp\src\main\java\com\zh\wechat\ltp\common\base\BaseEntity.java
+E:\ai-wechat\wechat-ltp\src\main\java\com\zh\wechat\ltp\service\Sentence2vector.java
+E:\ai-wechat\wechat-ltp\src\main\java\com\zh\wechat\ltp\service\SimKeyCompare.java
+E:\ai-wechat\wechat-ltp\src\main\java\com\zh\wechat\ltp\common\util\EntityUtils.java
+E:\ai-wechat\wechat-ltp\src\main\java\com\zh\wechat\ltp\common\StringToJson.java
+E:\ai-wechat\wechat-ltp\src\main\java\com\zh\wechat\ltp\controller\WechatEntranceController.java
+E:\ai-wechat\wechat-ltp\src\main\java\com\zh\wechat\ltp\controller\InitKnowledgeController.java
+E:\ai-wechat\wechat-ltp\src\main\java\com\zh\wechat\ltp\model\Knowledge.java
+E:\ai-wechat\wechat-ltp\src\main\java\com\zh\wechat\ltp\common\util\ReflectionUtils.java
+E:\ai-wechat\wechat-ltp\src\main\java\com\zh\wechat\ltp\LtpApplication.java
+E:\ai-wechat\wechat-ltp\src\main\java\com\zh\wechat\ltp\common\base\BaseService.java
+E:\ai-wechat\wechat-ltp\src\main\java\com\zh\wechat\ltp\service\KnowledgeService.java
+E:\ai-wechat\wechat-ltp\src\main\java\com\zh\wechat\ltp\common\ScheduledJob.java
+E:\ai-wechat\wechat-ltp\src\main\java\com\zh\wechat\ltp\mapper\KnowledgeMapper.java
+E:\ai-wechat\wechat-ltp\src\main\java\com\zh\wechat\ltp\common\JobInit.java
+E:\ai-wechat\wechat-ltp\src\main\java\com\zh\wechat\ltp\model\KnowledgeSimilar.java
+E:\ai-wechat\wechat-ltp\src\main\java\com\zh\wechat\ltp\common\util\DateHelper.java

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zh.wechat.ltp.mapper.KnowledgeMapper" >
+  <resultMap id="BaseResultMap" type="com.zh.wechat.ltp.model.Knowledge" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="QUESTION" property="question" jdbcType="VARCHAR" />
+    <result column="CATEGORY" property="category" jdbcType="INTEGER" />
+    <result column="ANSWER" property="answer" jdbcType="CLOB" />
+    <result column="QUESTION_TO_CALCULATE" property="questionToCalculate" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <select id="selectMaxId" resultType="java.lang.Integer">
+    SELECT MAX(ID) from KNOWLEDGE
+  </select>
+
+  <select id="selectListQuestion" resultMap="BaseResultMap">
+    SELECT ID, QUESTION FROM KNOWLEDGE WHERE del_flag = 0
+  </select>
+
+  <select id="selectAllNotDel" resultType="java.lang.Integer">
+    SELECT count(0) FROM KNOWLEDGE WHERE del_flag = 0
+  </select>
+
+
+</mapper>
