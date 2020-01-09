@@ -50,8 +50,14 @@ public class JobInit {
     /**
      * 静态区域存储的问题 2-电子税务局 3-ITS 4-常识类
      */
-    public static String[] vec = new String[data_num];
-    public static int[] vec_id = new int[data_num];
+    public static String[] separate_question = new String[data_num];
+    public static int[] knowledge_id = new int[data_num];
+
+    /**
+     * 静态区域存储问题的答案
+     * 为了后续知识库关键词查询功能，提前将答案进行分词保存
+     */
+    public static String[] separate_answer = new String[data_num];
 
     /**
      * 静态区域存储同义词替换
@@ -100,8 +106,16 @@ public class JobInit {
                          */
                         List<String> termList = new ArrayList<String>();
                         int size = segmentor.segment(knowledge.getQuestionToCalculate(),termList);
-                        vec[row] = termList.toString();
-                        vec_id[row] = knowledge.getId();
+                        separate_question[row] = termList.toString();
+                        knowledge_id[row] = knowledge.getId();
+
+                         /**
+                          * 将问题对应的答案也提请进行分词后静态存储
+                          */
+                        List<String> termList_answer = new ArrayList<String>();
+                        int size_answer = segmentor.segment(knowledge.getAnswer(),termList_answer);
+                        separate_answer[row] = termList_answer.toString();
+
                         row++;
                     }
                     knowledge_num = row;
@@ -207,7 +221,7 @@ public class JobInit {
 
         for (int i = 0; i < vec_seg.length; i++){
             if(vec_seg[i] != null) {
-                KnowledgeSimilar knowledgeSimilar = new KnowledgeSimilar(null,null,0f);
+                KnowledgeSimilar knowledgeSimilar = new KnowledgeSimilar();
                 result[0][index_of_result] = Float.parseFloat(String.valueOf(vec_seg_id[i]));
 
                 float ii = sentence2vector.calSimilarity(termList.toString(),vec_seg[i],resultMap);
@@ -221,7 +235,7 @@ public class JobInit {
                 index_of_result++;
                 knowledgeSimilar.setKnowledgeId(String.valueOf(vec_seg_id[i]));
                 knowledgeSimilar.setSimilar(avg);
-                knowledgeSimilar.setSeparateWords(vec_seg[i]);
+                knowledgeSimilar.setQuestionWords(vec_seg[i]);
 
                 knowledgeSimilarList.add(knowledgeSimilar);
             }

@@ -7,15 +7,15 @@ MyYml:
   KeywordPath: E:\ltp_data\keyword.txt
   SimilarityPath: E:\ltp_data\Similarity.txt
   SimWordPath: E:\ltp_data\sim_word.txt
-  #ModelPath: /home/weblogic/model/cws.model
-  #KeywordPath: /home/weblogic/model/keyword.txt
-  #SimilarityPath: /home/weblogic/model/Similarity.txt
-  #SimWordPath: /home/weblogic/model/sim_word.txt
+#  ModelPath: /home/weblogic/model/cws.model
+#  KeywordPath: /home/weblogic/model/keyword.txt
+#  SimilarityPath: /home/weblogic/model/Similarity.txt
+#  SimWordPath: /home/weblogic/model/sim_word.txt
 #datasource
 spring:
   datasource:
     name: customer
-#    url: jdbc:oracle:thin:@172.18.136.190:1521:orcl
+#    url: jdbc:oracle:thin:@172.16.2.83:1521:orcl3
 #    username: sy
 #    password: Sy123ZhongHe
     url: jdbc:oracle:thin:@localhost:1521:orcl

@@ -51,9 +51,35 @@ public class WechatEntranceController {
          */
         question = normalizing_question(question);
         List<KnowledgeSimilar> resultSimilar = new ArrayList<>();
-        resultSimilar = jobInit.GetResultSimilar(vec,vec_id,question);
+        resultSimilar = jobInit.GetResultSimilar(separate_question,knowledge_id,question);
         String jsonStr = JSONArray.toJSONString(resultSimilar);
         return jsonStr;
+    }
+
+    /**
+     * 知识库搜素
+     * @param
+     * @return
+     */
+    @GetMapping(value = "/getSegAnswer")
+    public String getSegemtorAnswer(){
+        List<KnowledgeSimilar> resultSimilar = resultAnswer(separate_answer,knowledge_id,separate_question);
+        String jsonStr = JSONArray.toJSONString(resultSimilar);
+        return jsonStr;
+    }
+
+    public List<KnowledgeSimilar> resultAnswer(String[] separate_answer, int[] knowledge_id,String[] separate_question){
+        List<KnowledgeSimilar> knowledgeSimilarList = new ArrayList<>();
+        for (int i = 0; i < separate_answer.length; i++){
+            if(separate_answer[i] != null) {
+                KnowledgeSimilar knowledgeSimilar = new KnowledgeSimilar();
+                knowledgeSimilar.setKnowledgeId(String.valueOf(knowledge_id[i]));
+                knowledgeSimilar.setAnswerWords(separate_answer[i]);
+                knowledgeSimilar.setQuestionWords(separate_question[i]);
+                knowledgeSimilarList.add(knowledgeSimilar);
+            }
+        }
+        return knowledgeSimilarList;
     }
 
 
