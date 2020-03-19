@@ -42,6 +42,9 @@ public class JobInit {
     @Resource
     KnowledgeService knowledgeService;
 
+    @Resource
+    Sentence2vector sentence2vector;
+
     /**
      * >=数据库中问答库数据条数
      */
@@ -182,7 +185,7 @@ public class JobInit {
     public Map<String,Float> GetResult(String[] vec_seg, int[] vec_seg_id, String question){
         int index_of_result = 0;
         float [][] result = new float[2][data_num];
-        Sentence2vector sentence2vector = new Sentence2vector();
+        //Sentence2vector sentence2vector = new Sentence2vector();
 
         List<String> termList = new ArrayList<>();
         segmentor.segment(question,termList);
@@ -212,7 +215,7 @@ public class JobInit {
     public List<KnowledgeSimilar> GetResultSimilar(String[] vec_seg, int[] vec_seg_id, String question){
         int index_of_result = 0;
         float [][] result = new float[2][data_num];
-        Sentence2vector sentence2vector = new Sentence2vector();
+        //Sentence2vector sentence2vector = new Sentence2vector();
 
         List<String> termList = new ArrayList<>();
         segmentor.segment(question,termList);

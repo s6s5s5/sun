@@ -1,11 +1,16 @@
 package com.zh.wechat.ltp.service;
 
 
+import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 
+@Component
 public class Sentence2vector {
 
+    @Resource
     SimKeyCompare simKeyCompare = new SimKeyCompare();
 
     public float calSimilarity(String sentence1, String sentence2, HashMap<String,String> resultMap) {
