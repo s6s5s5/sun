@@ -7,6 +7,7 @@ MyYml:
   KeywordPath: E:\ltp_data\keyword.txt
   SimilarityPath: E:\ltp_data\Similarity.txt
   SimWordPath: E:\ltp_data\sim_word.txt
+  PosModelPath: E:\ltp_data\pos.model
 #  ModelPath: /home/zhonghe/model/cws.model
 #  KeywordPath: /home/zhonghe/model/keyword.txt
 #  SimilarityPath: /home/zhonghe/model/Similarity.txt
@@ -20,7 +21,7 @@ spring:
 #    username: sy
 #    password: Sy123ZhongHe
     #本地测试
-    url: jdbc:oracle:thin:@192.168.169.149:1521:orcl
+    url: jdbc:oracle:thin:@localhost:1521:orcl
     username: sy
     password: Sy123ZhongHe
     #福建正式

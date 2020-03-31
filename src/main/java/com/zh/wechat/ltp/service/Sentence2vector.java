@@ -14,8 +14,8 @@ public class Sentence2vector {
     SimKeyCompare simKeyCompare = new SimKeyCompare();
 
     public float calSimilarity(String sentence1, String sentence2, HashMap<String,String> resultMap) {
-        String[] termList1 = sentence1.replace("[","").replace("]","").split(",");
-        String[] termList2 = sentence2.replace("[","").replace("]","").split(",");
+        String[] termList1 = sentence1.replace("[","").replace("]","").replaceAll("\\s*", "").split(",");
+        String[] termList2 = sentence2.replace("[","").replace("]","").replaceAll("\\s*", "").split(",");
         float temp = 0;
         float sum_sim = 0;
         int i = 0;

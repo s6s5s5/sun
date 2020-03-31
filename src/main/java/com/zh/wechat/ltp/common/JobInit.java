@@ -4,6 +4,7 @@ import com.zh.wechat.ltp.model.Knowledge;
 import com.zh.wechat.ltp.model.KnowledgeSimilar;
 import com.zh.wechat.ltp.service.KnowledgeService;
 import com.zh.wechat.ltp.service.Sentence2vector;
+import edu.hit.ir.ltp4j.Postagger;
 import edu.hit.ir.ltp4j.Segmentor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,9 +40,11 @@ public class JobInit {
     @Value("${MyYml.SimWordPath}")
     private String simwordPath;
 
+    @Value("${MyYml.PosModelPath}")
+    private String posModelPath;
+
     @Resource
     KnowledgeService knowledgeService;
-
     @Resource
     Sentence2vector sentence2vector;
 
@@ -74,10 +77,12 @@ public class JobInit {
     public static HashMap<String,String> resultMap = new HashMap<>();
 
     public static Segmentor segmentor = new Segmentor();
+    public static Postagger postagger = new Postagger();
 
     @PostConstruct
     public void init() throws Exception{
         segmentor.create(modelPath,keywordPath);
+        postagger.create(posModelPath);
         log.info("=======开始加载词语翻译模型 begin=======");
         ReadAndWriteFile();
         log.info("=======加载词语翻译模型结束 end=======");
@@ -101,6 +106,7 @@ public class JobInit {
             entity.setDelFlag(Short.valueOf("0"));
             List<Knowledge> knowledgeList = knowledgeService.selectList(entity);
             int row=0;
+            String wordsPos ="BfMadnv";
             for (Knowledge knowledge : knowledgeList) {
                 try {
                     if(!knowledge.getQuestionToCalculate().equals("null")&&!knowledge.equals("null")){
@@ -109,12 +115,28 @@ public class JobInit {
                          */
                         List<String> termList = new ArrayList<String>();
                         int size = segmentor.segment(knowledge.getQuestionToCalculate(),termList);
-                        separate_question[row] = termList.toString();
+                        /**
+                         * 形容词 a 副词 d 名词 n 动词 v
+                         * B区别词 f方位词 m数词
+                         */
+                        List<String> posTermList = new ArrayList<>();
+                        int posSize = postagger.postag(termList,posTermList);
+
+                        List<String> newList = new ArrayList<>();
+                        for(int i = 0;i<posTermList.size();i++){
+                            if(wordsPos.contains(posTermList.get(i))){
+                                newList.add(termList.get(i));
+                            }
+                        }
+                        //System.out.println(termList.toString());
+                        //System.out.println(newList.toString());
+                        //separate_question[row] = termList.toString();
+                        separate_question[row] = newList.toString();
                         knowledge_id[row] = knowledge.getId();
 
-                         /**
-                          * 将问题对应的答案也提请进行分词后静态存储
-                          */
+                        /**
+                         * 将问题对应的答案也提请进行分词后静态存储
+                         */
                         List<String> termList_answer = new ArrayList<String>();
                         int size_answer = segmentor.segment(knowledge.getAnswer(),termList_answer);
                         separate_answer[row] = termList_answer.toString();
@@ -185,7 +207,6 @@ public class JobInit {
     public Map<String,Float> GetResult(String[] vec_seg, int[] vec_seg_id, String question){
         int index_of_result = 0;
         float [][] result = new float[2][data_num];
-        //Sentence2vector sentence2vector = new Sentence2vector();
 
         List<String> termList = new ArrayList<>();
         segmentor.segment(question,termList);
@@ -215,7 +236,6 @@ public class JobInit {
     public List<KnowledgeSimilar> GetResultSimilar(String[] vec_seg, int[] vec_seg_id, String question){
         int index_of_result = 0;
         float [][] result = new float[2][data_num];
-        //Sentence2vector sentence2vector = new Sentence2vector();
 
         List<String> termList = new ArrayList<>();
         segmentor.segment(question,termList);
