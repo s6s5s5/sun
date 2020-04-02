@@ -44,6 +44,7 @@ public class WechatEntranceController {
     @ResponseBody
     @RequestMapping(value = "/businessChat",method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public String businessChat(@RequestBody JSONObject jsonParam){
+        System.out.println("ai开始"+System.currentTimeMillis());
         log.info("请求参数：{}",jsonParam.toJSONString());
         String question = jsonParam.get("question").toString();
         /**
@@ -53,6 +54,7 @@ public class WechatEntranceController {
         List<KnowledgeSimilar> resultSimilar = new ArrayList<>();
         resultSimilar = jobInit.GetResultSimilar(separate_question,knowledge_id,question);
         String jsonStr = JSONArray.toJSONString(resultSimilar);
+        System.out.println("ai结束"+System.currentTimeMillis());
         return jsonStr;
     }
 

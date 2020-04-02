@@ -59,9 +59,9 @@ public class Sentence2vectorTest {
 
         System.out.println(words_1.toString());
         System.out.println(words_2.toString());
-        float a = new Sentence2vector().calSimilarity(words_1.toString(),words_2.toString(),resultMap);
+        float a = new Sentence2vector().calSimilarity(words_1.toString(),words_2.toString());
         System.out.println(a);
-        float b = new Sentence2vector().calSimilarity(words_2.toString(),words_1.toString(),resultMap);
+        float b = new Sentence2vector().calSimilarity(words_2.toString(),words_1.toString());
         System.out.println(b);
 
         BigDecimal a1 = BigDecimal.valueOf(a);

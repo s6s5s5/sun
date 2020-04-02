@@ -32,7 +32,7 @@ public class SimKeyCompare {
      * @param
      * @return
      */
-    public float CosineCompare1(String keyword, String simword) {
+    public float CosineCompare(String keyword, String simword) {
 
         float wordSimilarity = 0.0f;
         Vector vec1;
@@ -42,9 +42,7 @@ public class SimKeyCompare {
         wordSimilarity=vec2.cosine(vec1);
         return wordSimilarity;
     }
-    public float CosineCompare(String keyword, String simword,Map map) {
-        return this.CosineCompare1(keyword,simword);
-    }
+
     /**
      * 将关键词转换成字向量求和取平均后的结果
      *

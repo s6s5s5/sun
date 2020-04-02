@@ -13,7 +13,7 @@ public class Sentence2vector {
     @Resource
     SimKeyCompare simKeyCompare = new SimKeyCompare();
 
-    public float calSimilarity(String sentence1, String sentence2, HashMap<String,String> resultMap) {
+    public float calSimilarity(String sentence1, String sentence2) {
         String[] termList1 = sentence1.replace("[","").replace("]","").replaceAll("\\s*", "").split(",");
         String[] termList2 = sentence2.replace("[","").replace("]","").replaceAll("\\s*", "").split(",");
         float temp = 0;
@@ -23,7 +23,7 @@ public class Sentence2vector {
             float max_sim = 0;
             Map<String,String> tMap = new HashMap<String,String>();
             for (String t2 : termList2) {
-                float sim = simKeyCompare.CosineCompare(t1.trim(),t2.trim(),resultMap);
+                float sim = simKeyCompare.CosineCompare(t1.trim(),t2.trim());
                 if (sim == 1 || sim == 0.93) {
                     if(tMap != null){
 
