@@ -95,7 +95,7 @@ public class JobInit {
     /**
      * 线程超时时间
      */
-    public static int threadTimeOut = 2300;
+    public static int threadTimeOut = 3100;
 
     @PostConstruct
     public void init() throws Exception{
