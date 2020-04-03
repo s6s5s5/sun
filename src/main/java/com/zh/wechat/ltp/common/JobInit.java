@@ -92,6 +92,11 @@ public class JobInit {
      */
     public static int pageThreadSize = 13000/pageThreadNum;
 
+    /**
+     * 线程超时时间
+     */
+    public static int threadTimeOut = 2300;
+
     @PostConstruct
     public void init() throws Exception{
         segmentor.create(modelPath,keywordPath);
@@ -323,22 +328,22 @@ public class JobInit {
         }, 0 , TimeUnit.SECONDS );
         try {
             long delay1 = System.currentTimeMillis();
-            List list1 = resultitem1.get(1800,TimeUnit.MILLISECONDS);
+            List list1 = resultitem1.get(threadTimeOut,TimeUnit.MILLISECONDS);
             long delay2 = System.currentTimeMillis();
-            System.out.println("第一个线程执行完成还剩"+String.valueOf((1800-delay2+delay1)>0?(1800-delay2+delay1):0));
-            List list2 = resultitem2.get((1800-delay2+delay1)>0?(1800-delay2+delay1):0,TimeUnit.MILLISECONDS);
+            System.out.println("第一个线程执行完成还剩"+String.valueOf((threadTimeOut-delay2+delay1)>0?(threadTimeOut-delay2+delay1):0));
+            List list2 = resultitem2.get((threadTimeOut-delay2+delay1)>0?(threadTimeOut-delay2+delay1):0,TimeUnit.MILLISECONDS);
             long delay3 = System.currentTimeMillis();
-            System.out.println("第二个线程执行完成还剩"+String.valueOf((1800-delay3+delay1)>0?(1800-delay3+delay1):0));
-            List list3 = resultitem3.get((1800-delay3+delay1)>0?(1800-delay3+delay1):0,TimeUnit.MILLISECONDS);
+            System.out.println("第二个线程执行完成还剩"+String.valueOf((threadTimeOut-delay3+delay1)>0?(threadTimeOut-delay3+delay1):0));
+            List list3 = resultitem3.get((threadTimeOut-delay3+delay1)>0?(threadTimeOut-delay3+delay1):0,TimeUnit.MILLISECONDS);
             long delay4 = System.currentTimeMillis();
-            System.out.println("第三个线程执行完成还剩"+String.valueOf((1800-delay4+delay1)>0?(1800-delay4+delay1):0));
-            List list4 = resultitem4.get((1800-delay4+delay1)>0?(1800-delay4+delay1):0,TimeUnit.MILLISECONDS);
+            System.out.println("第三个线程执行完成还剩"+String.valueOf((threadTimeOut-delay4+delay1)>0?(threadTimeOut-delay4+delay1):0));
+            List list4 = resultitem4.get((threadTimeOut-delay4+delay1)>0?(threadTimeOut-delay4+delay1):0,TimeUnit.MILLISECONDS);
             long delay5 = System.currentTimeMillis();
-            System.out.println("第四个线程执行完成还剩"+String.valueOf((1800-delay5+delay1)>0?(1800-delay5+delay1):0));
-            List list5 = resultitem5.get((1800-delay5+delay1)>0?(1800-delay5+delay1):0,TimeUnit.MILLISECONDS);
+            System.out.println("第四个线程执行完成还剩"+String.valueOf((threadTimeOut-delay5+delay1)>0?(threadTimeOut-delay5+delay1):0));
+            List list5 = resultitem5.get((threadTimeOut-delay5+delay1)>0?(threadTimeOut-delay5+delay1):0,TimeUnit.MILLISECONDS);
             long delay6 = System.currentTimeMillis();
-            System.out.println("第五个线程执行完成还剩"+String.valueOf((1800-delay6+delay1)>0?(1800-delay6+delay1):0));
-            List list6 = resultitem6.get((1800-delay6+delay1)>0?(1800-delay6+delay1):0,TimeUnit.MILLISECONDS);
+            System.out.println("第五个线程执行完成还剩"+String.valueOf((threadTimeOut-delay6+delay1)>0?(threadTimeOut-delay6+delay1):0));
+            List list6 = resultitem6.get((threadTimeOut-delay6+delay1)>0?(threadTimeOut-delay6+delay1):0,TimeUnit.MILLISECONDS);
             knowledgeSimilarList.addAll(list1);
             knowledgeSimilarList.addAll(list2);
             knowledgeSimilarList.addAll(list3);
