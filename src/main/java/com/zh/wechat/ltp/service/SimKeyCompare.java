@@ -9,7 +9,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -40,6 +39,17 @@ public class SimKeyCompare {
         vec1 = Words2Vec(keyword);
         vec2 = Words2Vec(simword);
         wordSimilarity=vec2.cosine(vec1);
+        return wordSimilarity;
+    }
+
+    /**
+     * 计算两个关键词向量的余弦值
+     * 词对向量
+     * @param
+     * @return
+     */
+    public float CosineCompare1(Vector vector1, Vector vector2) {
+        float wordSimilarity=vector1.cosine(vector2);
         return wordSimilarity;
     }
 

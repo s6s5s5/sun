@@ -11,7 +11,7 @@ import java.util.Map;
 public class Sentence2vector {
 
     @Resource
-    SimKeyCompare simKeyCompare = new SimKeyCompare();
+    SimKeyCompare simKeyCompare;
 
     public float calSimilarity(String sentence1, String sentence2) {
         String[] termList1 = sentence1.replace("[","").replace("]","").replaceAll("\\s*", "").split(",");
@@ -46,4 +46,22 @@ public class Sentence2vector {
         }
     }
 
+    /**
+     * 向量比较返回相似度
+     */
+    public float calSimilarity1(Vector[] sentence1, Vector[] sentence2) {
+        float temp = 0;
+        float sum_sim = 0;
+        for (Vector t1 : sentence1) {
+            float max_sim = 0;
+            for (Vector t2 : sentence2) {
+                float sim = simKeyCompare.CosineCompare1(t1,t2);
+                if (sim > max_sim) {
+                    max_sim = sim;
+                }
+            }
+            sum_sim += max_sim;
+        }
+        return temp = sum_sim/sentence1.length;
+    }
 }

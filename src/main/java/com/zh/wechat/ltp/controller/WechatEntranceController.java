@@ -7,6 +7,7 @@ import com.zh.wechat.ltp.common.util.DateHelper;
 import com.zh.wechat.ltp.model.Knowledge;
 import com.zh.wechat.ltp.model.KnowledgeSimilar;
 import com.zh.wechat.ltp.service.KnowledgeService;
+import com.zh.wechat.ltp.service.Vector;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -52,7 +53,7 @@ public class WechatEntranceController {
          */
         question = normalizing_question(question);
         List<KnowledgeSimilar> resultSimilar = new ArrayList<>();
-        resultSimilar = jobInit.GetResultSimilar(separate_question,knowledge_id,question);
+        resultSimilar = jobInit.GetResultSimilar(knowledgeVectorMap,separate_question,knowledge_id,question);
         String jsonStr = JSONArray.toJSONString(resultSimilar);
         System.out.println("ai结束"+System.currentTimeMillis());
         return jsonStr;
