@@ -9,6 +9,7 @@ import com.zh.wechat.ltp.service.Vector;
 import edu.hit.ir.ltp4j.Postagger;
 import edu.hit.ir.ltp4j.Segmentor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -111,6 +112,15 @@ public class JobInit {
     public void init() throws Exception{
         segmentor.create(modelPath,keywordPath);
         postagger.create(posModelPath);
+        /*List<String> termList = new ArrayList<String>();
+        int size = mySegment("股权平价转让需要交个税吗",termList);
+        String abc = StringUtils.join(termList,",");
+        List<String> termList1 = new ArrayList<String>();
+        int size1 = mySegment("个人之间平价或低价转让股权如何计算缴纳个人所得税？需要进行核定么？",termList1);
+        String abc1 = StringUtils.join(termList1,",");
+        List<String> termList2 = new ArrayList<String>();
+        int size2 = mySegment("亲属之间无偿转让股权，需要交个人所得税吗？",termList2);
+        String abc2 = StringUtils.join(termList2,",");*/
         log.info("=======开始加载词语翻译模型 begin=======");
         ReadAndWriteFile();
         log.info("=======加载词语翻译模型结束 end=======");
@@ -133,7 +143,7 @@ public class JobInit {
         for(int i = 0;i<posTermList.size();i++){
             String currentpos = posTermList.get(i);
             if(currentpos.startsWith("a")||currentpos.startsWith("d")||currentpos.startsWith("n")
-                    ||currentpos.startsWith("v") || currentpos.startsWith("b") || currentpos.startsWith("f") || currentpos.startsWith("m")){
+                    ||currentpos.startsWith("v") || currentpos.startsWith("b") || currentpos.startsWith("f") || currentpos.startsWith("m") || currentpos.startsWith("j")){
                 var2.add(termList.get(i));
             }
         }
