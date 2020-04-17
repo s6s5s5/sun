@@ -105,6 +105,11 @@ public class JobInit {
      */
     public static Map<Integer,Vector[]> knowledgeVectorMap;
 
+    /**
+     * 知识库分词权重
+     */
+    public static Map<Integer,float[]> knowledgeWeight;
+
     @Resource
     SimKeyCompare simKeyCompare;
 
@@ -112,15 +117,6 @@ public class JobInit {
     public void init() throws Exception{
         segmentor.create(modelPath,keywordPath);
         postagger.create(posModelPath);
-        /*List<String> termList = new ArrayList<String>();
-        int size = mySegment("股权平价转让需要交个税吗",termList);
-        String abc = StringUtils.join(termList,",");
-        List<String> termList1 = new ArrayList<String>();
-        int size1 = mySegment("个人之间平价或低价转让股权如何计算缴纳个人所得税？需要进行核定么？",termList1);
-        String abc1 = StringUtils.join(termList1,",");
-        List<String> termList2 = new ArrayList<String>();
-        int size2 = mySegment("亲属之间无偿转让股权，需要交个人所得税吗？",termList2);
-        String abc2 = StringUtils.join(termList2,",");*/
         log.info("=======开始加载词语翻译模型 begin=======");
         ReadAndWriteFile();
         log.info("=======加载词语翻译模型结束 end=======");
@@ -149,6 +145,7 @@ public class JobInit {
         }
         return var2.size();
     }
+
     /**
      * 静态存储分词结果
      */
@@ -162,8 +159,10 @@ public class JobInit {
             List<Knowledge> knowledgeList = knowledgeService.selectList(entity);
             pageThreadSize = knowledgeList.size()/pageThreadNum;
             int row=0;
-            //String wordsPos ="bfmadnv";
+            //初始化知识库向量字典
             knowledgeVectorMap = new HashMap<>();
+            //初始化知识库分词数组字典
+            Map<Integer,List<String>> knowledgeSeparateQuestions = new HashMap<>();
             for (Knowledge knowledge : knowledgeList) {
                 try {
                     if(!knowledge.getQuestionToCalculate().equals("null")&&!knowledge.equals("null")){
@@ -171,23 +170,6 @@ public class JobInit {
                          * 存储分词后的结果
                          */
                         List<String> termList = new ArrayList<String>();
-                       /* int size = segmentor.segment(knowledge.getQuestionToCalculate(),termList);
-                        *//**
-                         * 形容词 a 副词 d 名词 n 动词 v
-                         * B区别词 f方位词 m数词
-                         *//*
-                        List<String> posTermList = new ArrayList<>();
-                        int posSize = postagger.postag(termList,posTermList);
-
-                        List<String> newList = new ArrayList<>();
-                        for(int i = 0;i<posTermList.size();i++){
-                            if(wordsPos.contains(posTermList.get(i))){
-                                newList.add(termList.get(i));
-                            }
-                        }*/
-                        //System.out.println(termList.toString());
-                        //System.out.println(newList.toString());
-                        //separate_question[row] = termList.toString();
                         mySegment(knowledge.getQuestionToCalculate(),termList);
                         //获得分词结果
                         String[] termListresult = termList.toString().replace("[","").replace("]","").replaceAll("\\s*", "").split(",");
@@ -199,12 +181,11 @@ public class JobInit {
                         knowledgeVectorMap.put(knowledge.getId(),veclist);
                         separate_question[row] = termList.toString();
                         knowledge_id[row] = knowledge.getId();
-
+                        knowledgeSeparateQuestions.put(knowledge.getId(),termList);
                         /**
                          * 将问题对应的答案也提请进行分词后静态存储
                          */
                         List<String> termList_answer = new ArrayList<String>();
-                        //int size_answer = segmentor.segment(knowledge.getAnswer(),termList_answer);
                         int size_answer = mySegment(knowledge.getAnswer(),termList_answer);
                         separate_answer[row] = termList_answer.toString();
 
@@ -218,12 +199,53 @@ public class JobInit {
                     log.error("error in here:{},question{}", knowledge.getId(),knowledge.getQuestion());
                 }
             }
+            knowledgeWeight = quanzhongknowledge(knowledgeSeparateQuestions);
             log.info("知识库分词结束，分词条数:{}",row);
         } catch (Exception e) {
             //打印异常
             log.error("JobInit.createIndex_w.error{}", e);
         }
     }
+
+
+    /**
+     * 【计算知识库问题各个词语的权重】
+     *
+     * @param knowledgeSeparateQuestions 知识库问题分词数组字典
+     * @return Map<Integer, float [ ]> key 为knowledgeid float[] 为 String[] 对应分词的权重（按照顺序存储）
+     */
+    public static Map<Integer, float[]> quanzhongknowledge(Map<Integer, List<String>> knowledgeSeparateQuestions) {
+        Map<Integer, float[]> map = new HashMap<>();
+        float size= knowledgeSeparateQuestions.size();
+        Map<String, Float> quanzhong = new HashMap<>();
+
+        for (Integer id : knowledgeSeparateQuestions.keySet()) {
+            for (String s : knowledgeSeparateQuestions.get(id)) {
+                if (!quanzhong.containsKey(s)) {
+                    quanzhong.put(s, 1f);
+                } else {
+                    quanzhong.put(s, quanzhong.get(s) + 1);
+                }
+
+            }
+        }
+
+        for (String s : quanzhong.keySet()) {
+            quanzhong.put(s, (float) Math.log(size / quanzhong.get(s)));
+        }
+
+        for (Integer id : knowledgeSeparateQuestions.keySet()) {
+            int len = knowledgeSeparateQuestions.get(id).size();
+            List<String> list = knowledgeSeparateQuestions.get(id);
+            float[] floats = new float[len];
+            for (int i = 0; i < len; i++) {
+                floats[i] = quanzhong.get(list.get(i));
+            }
+            map.put(id, floats);
+        }
+        return map;
+    }
+
 
     /**
      * 初始化近义词到静态区
@@ -271,37 +293,6 @@ public class JobInit {
         }
     }
 
-
-    public Map<String,Float> GetResult(String[] vec_seg, int[] vec_seg_id, String question){
-        int index_of_result = 0;
-        float [][] result = new float[2][data_num];
-
-        List<String> termList = new ArrayList<>();
-        //segmentor.segment(question,termList);
-        mySegment(question,termList);
-
-        Map<String,Float> map = new HashMap<>();
-
-        for (int i = 0; i < vec_seg.length; i++){
-            if(vec_seg[i] != null) {
-                result[0][index_of_result] = Float.parseFloat(String.valueOf(vec_seg_id[i]));
-
-                float ii = sentence2vector.calSimilarity(termList.toString(),vec_seg[i]);
-                BigDecimal b1 = BigDecimal.valueOf(ii);
-
-                float jj = sentence2vector.calSimilarity(vec_seg[i],termList.toString());
-                BigDecimal b2 = BigDecimal.valueOf(jj);
-
-                float avg = b1.add(b2).floatValue()/2.0f;
-                result[1][index_of_result] = avg;
-                index_of_result++;
-
-                map.put(String.valueOf(vec_seg_id[i]),avg);
-            }
-        }
-        return map;
-    }
-
     public List<KnowledgeSimilar> GetResultSimilar(Map<Integer,Vector[]> knowledgeVectorMap,String[] separate_question, int[] vec_seg_id, String question){
         List<String> termList = new ArrayList<>();
         //segmentor.segment(question,termList);
@@ -319,7 +310,7 @@ public class JobInit {
         Future<List> resultitem1 = pool.schedule(new Callable<List>() {
             @Override
             public List call() throws Exception {
-                return getknowledgeAnswer(0,1*pageThreadSize, knowledgeVectorMap, separate_question, vec_seg_id, quesionveclist);
+                return getknowledgeAnswer(0,1*pageThreadSize, knowledgeVectorMap, separate_question, vec_seg_id, quesionveclist, knowledgeWeight);
             }
         }, 0 , TimeUnit.SECONDS );
 
@@ -327,7 +318,7 @@ public class JobInit {
         Future<List> resultitem2 = pool.schedule(new Callable<List>() {
             @Override
             public List call() throws Exception {
-                return getknowledgeAnswer(1*pageThreadSize,2*pageThreadSize, knowledgeVectorMap, separate_question, vec_seg_id, quesionveclist);
+                return getknowledgeAnswer(1*pageThreadSize,2*pageThreadSize, knowledgeVectorMap, separate_question, vec_seg_id, quesionveclist, knowledgeWeight);
             }
         }, 0 , TimeUnit.SECONDS );
 
@@ -335,7 +326,7 @@ public class JobInit {
         Future<List> resultitem3 = pool.schedule(new Callable<List>() {
             @Override
             public List call() throws Exception {
-                return getknowledgeAnswer(2*pageThreadSize,3*pageThreadSize, knowledgeVectorMap, separate_question, vec_seg_id, quesionveclist);
+                return getknowledgeAnswer(2*pageThreadSize,3*pageThreadSize, knowledgeVectorMap, separate_question, vec_seg_id, quesionveclist, knowledgeWeight);
             }
         }, 0 , TimeUnit.SECONDS );
 
@@ -343,7 +334,7 @@ public class JobInit {
         Future<List> resultitem4 = pool.schedule(new Callable<List>() {
             @Override
             public List call() throws Exception {
-                return getknowledgeAnswer(3*pageThreadSize,4*pageThreadSize, knowledgeVectorMap, separate_question, vec_seg_id, quesionveclist);
+                return getknowledgeAnswer(3*pageThreadSize,4*pageThreadSize, knowledgeVectorMap, separate_question, vec_seg_id, quesionveclist, knowledgeWeight);
             }
         }, 0 , TimeUnit.SECONDS );
 
@@ -351,7 +342,7 @@ public class JobInit {
         Future<List> resultitem5 = pool.schedule(new Callable<List>() {
             @Override
             public List call() throws Exception {
-                return getknowledgeAnswer(4*pageThreadSize,5*pageThreadSize, knowledgeVectorMap, separate_question, vec_seg_id, quesionveclist);
+                return getknowledgeAnswer(4*pageThreadSize,5*pageThreadSize, knowledgeVectorMap, separate_question, vec_seg_id, quesionveclist, knowledgeWeight);
             }
         }, 0 , TimeUnit.SECONDS );
 
@@ -359,7 +350,7 @@ public class JobInit {
         Future<List> resultitem6 = pool.schedule(new Callable<List>() {
             @Override
             public List call() throws Exception {
-                return getknowledgeAnswer(5*pageThreadSize,data_num, knowledgeVectorMap, separate_question, vec_seg_id, quesionveclist);
+                return getknowledgeAnswer(5*pageThreadSize,data_num, knowledgeVectorMap, separate_question, vec_seg_id, quesionveclist, knowledgeWeight);
             }
         }, 0 , TimeUnit.SECONDS );
         try {
@@ -393,16 +384,21 @@ public class JobInit {
         return knowledgeSimilarList;
     }
 
-    public List<KnowledgeSimilar> getknowledgeAnswer(int bedin, int end, Map<Integer,Vector[]> knowledgeVectorMap, String[] separate_question, int[] vec_seg_id, Vector[] quesionveclist){
+    public List<KnowledgeSimilar> getknowledgeAnswer(int bedin, int end, Map<Integer,Vector[]> knowledgeVectorMap, String[] separate_question, int[] vec_seg_id, Vector[] quesionveclist, Map<Integer,float[]> knowledgeWeight){
         List<KnowledgeSimilar> knowledgeSimilarList = new ArrayList<>();
         for (int i = bedin; i < end; i++){
             if(separate_question[i] != null) {
                 KnowledgeSimilar knowledgeSimilar = new KnowledgeSimilar();
-
-                float ii = sentence2vector.calSimilarity1(quesionveclist,knowledgeVectorMap.get(vec_seg_id[i]));
+                //问题比较知识库
+                if(4312 == vec_seg_id[i]){
+                    System.out.println("wangfudong");
+                }
+                float ii = sentence2vector.calSimilarity1(quesionveclist,knowledgeVectorMap.get(vec_seg_id[i]),knowledgeWeight.get(vec_seg_id[i]));
+                //float ii = sentence2vector.calSimilarity1(quesionveclist,knowledgeVectorMap.get(vec_seg_id[i]));
                 BigDecimal b1 = BigDecimal.valueOf(ii);
-
-                float jj = sentence2vector.calSimilarity1(knowledgeVectorMap.get(vec_seg_id[i]),quesionveclist);
+                //知识库比较问题
+                float jj = sentence2vector.calSimilarity2(knowledgeVectorMap.get(vec_seg_id[i]),quesionveclist,knowledgeWeight.get(vec_seg_id[i]));
+                //float jj = sentence2vector.calSimilarity1(knowledgeVectorMap.get(vec_seg_id[i]),quesionveclist);
                 BigDecimal b2 = BigDecimal.valueOf(jj);
 
                 float avg = b1.add(b2).floatValue()/2.0f;
