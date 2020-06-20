@@ -57,7 +57,7 @@ public class WechatEntranceController {
         String jsonStr = JSONArray.toJSONString(resultSimilar);
         System.out.println("ai结束"+System.currentTimeMillis());
         return jsonStr;
-    }
+}
 
     /**
      * 知识库搜素

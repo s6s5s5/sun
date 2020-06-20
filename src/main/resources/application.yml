@@ -3,15 +3,16 @@ server:
     context-path: /api
   port: 8088
 MyYml:
-#  ModelPath: E:\ltp_data\cws.model
-#  KeywordPath: E:\ltp_data\keyword.txt
-#  SimilarityPath: E:\ltp_data\Similarity.txt
-#  SimWordPath: E:\ltp_data\sim_word.txt
-  ModelPath: /home/weblogic/model/cws.model
-  KeywordPath: /home/weblogic/model/keyword.txt
-  SimilarityPath: /home/weblogic/model/Similarity.txt
-  SimWordPath: /home/weblogic/model/sim_word.txt
-  PosModelPath: /home/weblogic/model/pos.model
+  ModelPath: D:\ltp_data\cws.model
+  KeywordPath: D:\ltp_data\keyword.txt
+  SimilarityPath: D:\ltp_data\Similarity.txt
+  SimWordPath: D:\ltp_data\sim_word.txt
+  PosModelPath:  D:\ltp_data\pos.model
+  #ModelPath: /home/weblogic/model/cws.model
+  #KeywordPath: /home/weblogic/model/keyword.txt
+  #SimilarityPath: /home/weblogic/model/Similarity.txt
+  #SimWordPath: /home/weblogic/model/sim_word.txt
+  #PosModelPath: /home/weblogic/model/pos.model
 #datasource
 spring:
   datasource:
@@ -21,17 +22,17 @@ spring:
 #    username: sy
 #    password: Sy123ZhongHe
     #本地测试
-#    url: jdbc:oracle:thin:@localhost:1521:orcl
-#    username: sy
-#    password: Sy123ZhongHe
+    url: jdbc:oracle:thin:@localhost:1521:orcl
+    username: system
+    password: orcl
     #福建正式
 #    url: jdbc:oracle:thin:@172.18.136.190:1521:orcl2
 #    username: sy
 #    password: Sy123ZhongHe
     #天津正式
-    url: jdbc:oracle:thin:@10.103.120.41:1521:orcl
-    username: sy
-    password: Sy123ZhongHe
+#    url: jdbc:oracle:thin:@192.168.169.113:1521:orclwfd
+#    username: sy
+#    password: Sy123ZhongHe
     # 使用druid数据源
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: oracle.jdbc.driver.OracleDriver

@@ -384,9 +384,11 @@ public class JobInit {
         return knowledgeSimilarList;
     }
 
-    public List<KnowledgeSimilar> getknowledgeAnswer(int bedin, int end, Map<Integer,Vector[]> knowledgeVectorMap, String[] separate_question, int[] vec_seg_id, Vector[] quesionveclist, Map<Integer,float[]> knowledgeWeight){
+    public List<KnowledgeSimilar> getknowledgeAnswer(int begin, int end, Map<Integer,
+            Vector[]> knowledgeVectorMap, String[] separate_question, int[] vec_seg_id,
+            Vector[] quesionveclist, Map<Integer,float[]> knowledgeWeight){
         List<KnowledgeSimilar> knowledgeSimilarList = new ArrayList<>();
-        for (int i = bedin; i < end; i++){
+        for (int i = begin; i < end; i++){
             if(separate_question[i] != null) {
                 KnowledgeSimilar knowledgeSimilar = new KnowledgeSimilar();
                 //问题比较知识库
